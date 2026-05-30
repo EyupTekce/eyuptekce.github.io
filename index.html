@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eyüp Tekçe — Software Developer</title>
+<meta name="description" content="Bilişim Sistemleri ve Teknolojileri öğrencisi, C# geliştirici.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Epilogue:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ TOKENS ═══════════ */
+:root {
+  --bg:#08080f; --bg2:#0d0d18; --surface:#11111e; --surface2:#161625;
+  --border:#1e1e32; --border2:#252540;
+  --text:#eeedf5; --muted:#6b6a80; --faint:#3a3a55;
+  --accent:#c8ff47; --accent2:#47e0ff; --accent3:#b047ff;
+  --glow-y:rgba(200,255,71,.12); --glow-b:rgba(71,224,255,.08);
+  --nav-h:66px; --r:14px; --r2:20px;
+}
+/* ── PREMIUM LIGHT MODE — warm editorial ── */
+[data-theme="light"] {
+  --bg:#faf7f2;          /* warm parchment, not stark white */
+  --bg2:#f3ede4;         /* subtle toasted cream */
+  --surface:#ffffff;
+  --surface2:#fdf9f4;
+  --border:#e8e0d4;
+  --border2:#d8cfc2;
+  --text:#1a1410;        /* rich dark ink, not pure black */
+  --muted:#7a6f62;       /* warm taupe, not grey */
+  --faint:#c4bdb4;
+  --accent:#2d5a00;      /* deep forest green — bold, not washed out */
+  --accent2:#005f73;     /* teal ink */
+  --accent3:#5c0099;
+  --glow-y:rgba(45,90,0,.08);
+  --glow-b:rgba(0,95,115,.06);
+}
+
+/* ═══════════ RESET ═══════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Epilogue',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background .4s,color .4s}
+
+/* ═══════════ STARS CANVAS ═══════════ */
+#stars-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
+[data-theme="light"] #stars-canvas{opacity:.15}
+
+/* ═══════════ NAV ═══════════ */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:300;
+  display:flex;align-items:center;justify-content:space-between;padding:0 5%;
+  background:rgba(8,8,15,.82);backdrop-filter:blur(28px) saturate(180%);
+  border-bottom:1px solid var(--border);transition:background .4s,border-color .4s}
+[data-theme="light"] nav{background:rgba(250,247,242,.92);border-bottom-color:var(--border)}
+.logo{font-family:'Playfair Display',serif;font-weight:900;font-size:1.1rem;
+  color:var(--text);text-decoration:none;letter-spacing:-.01em;position:relative;z-index:1}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.ntoggle{display:flex;align-items:center;gap:5px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:100px;padding:5px 13px;
+  font-size:.7rem;font-weight:700;letter-spacing:.06em;color:var(--muted);
+  cursor:pointer;transition:all .2s;font-family:'Epilogue',sans-serif}
+.ntoggle:hover{border-color:var(--accent);color:var(--text)}
+.ntoggle .nd{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hbg span{display:block;width:21px;height:1.5px;background:var(--text);transition:all .3s}
+
+/* mobile menu */
+.mmenu{display:none;position:fixed;inset:0;background:var(--bg);z-index:280;
+  flex-direction:column;align-items:center;justify-content:center;gap:2.2rem}
+.mmenu.open{display:flex}
+.mmenu a{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;
+  color:var(--text);text-decoration:none;transition:color .2s}
+.mmenu a:hover{color:var(--accent)}
+.mmclose{position:absolute;top:22px;right:22px;background:none;border:none;
+  color:var(--text);font-size:1.4rem;cursor:pointer}
+
+/* ═══════════ HERO ═══════════ */
+#hero{min-height:100vh;display:flex;align-items:center;
+  padding:calc(var(--nav-h) + 4rem) 5% 5rem;
+  position:relative;overflow:hidden}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1;
+  display:grid;grid-template-columns:1fr 380px;gap:5rem;align-items:center}
+
+/* glow blobs */
+.gblob{position:absolute;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0}
+.gb1{width:700px;height:500px;background:rgba(200,255,71,.035);top:-100px;right:-150px}
+.gb2{width:500px;height:500px;background:rgba(71,224,255,.025);bottom:-50px;left:-50px}
+.gb3{width:300px;height:300px;background:rgba(176,71,255,.02);top:30%;right:20%}
+
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:.65rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:1.8rem;opacity:0;animation:fup .8s .05s forwards}
+.htdot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(200,255,71,.4)}
+  50%{opacity:.6;box-shadow:0 0 0 6px rgba(200,255,71,0)}}
+
+/* typing title */
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(3.5rem,8vw,6.5rem);
+  font-weight:900;line-height:.92;letter-spacing:-.04em;
+  margin-bottom:2rem;opacity:0;animation:fup .8s .15s forwards}
+.hero-title .outline{-webkit-text-stroke:1.5px var(--text);color:transparent;opacity:.25}
+[data-theme="light"] .hero-title .outline{-webkit-text-stroke:1.5px var(--text);opacity:.18}
+
+.hero-sub{font-size:.95rem;font-weight:300;color:var(--muted);line-height:1.82;
+  max-width:450px;margin-bottom:2.5rem;opacity:0;animation:fup .8s .28s forwards}
+
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:fup .8s .4s forwards}
+.btn-primary{background:var(--accent);color:#08080f;padding:13px 26px;border-radius:100px;
+  font-size:.82rem;font-weight:700;text-decoration:none;letter-spacing:.03em;
+  transition:opacity .2s,transform .2s,box-shadow .2s}
+.btn-primary:hover{opacity:.9;transform:translateY(-2px);
+  box-shadow:0 0 30px rgba(200,255,71,.3)}
+.btn-sec{border:1px solid var(--border2);color:var(--text);padding:13px 26px;
+  border-radius:100px;font-size:.82rem;font-weight:400;text-decoration:none;
+  transition:border-color .2s,transform .2s}
+.btn-sec:hover{border-color:var(--muted);transform:translateY(-2px)}
+
+/* status pills */
+.hpills{display:flex;flex-direction:column;gap:9px;margin-top:2rem;
+  opacity:0;animation:fup .8s .52s forwards}
+.hpill{display:inline-flex;align-items:center;gap:9px;background:var(--surface);
+  border:1px solid var(--border2);padding:8px 14px;border-radius:10px;
+  font-size:.77rem;color:var(--muted);width:fit-content}
+.hpill strong{color:var(--text);font-weight:500}
+.pd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.pg{background:#4ade80;box-shadow:0 0 8px #4ade8099}
+.pb{background:var(--accent2);box-shadow:0 0 8px rgba(71,224,255,.6)}
+
+/* hero photo */
+.hphoto{display:flex;flex-direction:column;align-items:center;gap:1.2rem;
+  opacity:0;animation:fin 1.1s .4s forwards;position:relative;z-index:1}
+.photo-frame{width:320px;height:380px;border-radius:var(--r2);position:relative;
+  background:var(--surface);border:1px solid var(--border2);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.photo-frame::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.photo-frame::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(200,255,71,.04),transparent 60%);
+  pointer-events:none}
+.photo-frame img{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;border-radius:calc(var(--r2) - 1px);display:none}
+.photo-frame img.loaded{display:block}
+.pph-inner{text-align:center;color:var(--muted);position:relative;z-index:1;padding:0 20px}
+.pph-inner svg{width:44px;height:44px;stroke:var(--muted);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto}
+.pph-inner p{font-size:.71rem;line-height:1.5}
+.pph-inner code{display:inline-block;margin-top:8px;background:var(--bg);
+  border:1px solid var(--border);padding:4px 10px;border-radius:6px;
+  font-size:.67rem;color:var(--accent)}
+
+/* hero static label like the reference screenshot */
+.hero-static-label{position:absolute;bottom:18px;left:0;right:0;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hsl-line{width:28px;height:1px;background:var(--border2);margin:0 auto 6px}
+
+/* tech pill row under photo */
+.tech-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.tech-chip{display:inline-flex;align-items:center;gap:5px;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:100px;padding:4px 10px;font-size:.66rem;color:var(--muted)}
+.tc-dot{width:5px;height:5px;border-radius:50%}
+.tc-cs{background:#9b59b6}
+.tc-py{background:#3776ab}
+.tc-gs{background:#34a853}
+.tc-git{background:#f05032}
+
+@keyframes fup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+
+/* ═══════════ SECTIONS ═══════════ */
+section{padding:7rem 5%;position:relative;z-index:1}
+.si{max-width:1200px;margin:0 auto}
+.seyebrow{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.65rem;font-weight:700}
+.stitle{font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,2.9rem);font-weight:900;
+  letter-spacing:-.03em;line-height:1.05;margin-bottom:1rem}
+.sbar{width:32px;height:2px;background:var(--accent);margin-bottom:3.5rem}
+.rev{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
+.rev.vis{opacity:1;transform:none}
+
+/* ═══════════ ABOUT ═══════════ */
+#about{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.at p{font-size:.94rem;color:var(--muted);line-height:1.88;margin-bottom:1.1rem}
+.hl{color:var(--accent);font-weight:500}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:2rem}
+.stbox{background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:1.2rem}
+.stbox .n{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;
+  color:var(--accent);line-height:1;margin-bottom:3px}
+.stbox .l{font-size:.72rem;color:var(--muted)}
+
+/* quote */
+.qcard{background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:1.8rem;position:relative;overflow:hidden;margin-bottom:1.1rem}
+.qcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.qcard blockquote{font-family:'Playfair Display',serif;font-size:1rem;
+  font-style:italic;line-height:1.65;color:var(--text);margin-bottom:.9rem}
+.qsub{font-size:.75rem;color:var(--muted)}
+.qsub strong{color:var(--text)}
+
+/* erasmus */
+.ecard{background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:1.4rem;position:relative;overflow:hidden}
+.ecard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent2),var(--accent3))}
+.ecard-head{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.eflag{font-size:1.3rem}
+.etitle{font-weight:600;font-size:.88rem}
+.esub{font-size:.73rem;color:var(--muted)}
+.erows{display:flex;flex-direction:column;gap:.4rem}
+.erow{display:flex;justify-content:space-between;align-items:center;
+  font-size:.78rem;padding:.38rem 0;border-bottom:1px solid var(--border)}
+.erow:last-child{border-bottom:none}
+.ek{color:var(--muted)}
+.ev{color:var(--text);font-weight:500;text-align:right}
+
+/* ═══════════ SKILLS — TAG CLOUD STYLE ═══════════ */
+#skills{}
+.skills-cats{display:flex;flex-direction:column;gap:2.5rem}
+.scat-label{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.scat-icon{width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.sci-a{background:rgba(155,89,182,.12)}
+.sci-b{background:rgba(71,224,255,.08)}
+.sci-c{background:rgba(200,255,71,.08)}
+.sci-d{background:rgba(176,71,255,.1)}
+.scat-name{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.scat-line{flex:1;height:1px;background:var(--border)}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px}
+.ttag{display:inline-flex;align-items:center;gap:7px;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:100px;padding:8px 16px;
+  font-size:.82rem;font-weight:500;color:var(--text);
+  transition:border-color .25s,transform .25s,box-shadow .25s;cursor:default}
+.ttag:hover{border-color:rgba(200,255,71,.4);transform:translateY(-2px);
+  box-shadow:0 4px 20px rgba(200,255,71,.06)}
+.ttag-ico{width:18px;height:18px;object-fit:contain;filter:none}
+.ttag-em{display:inline-block;width:14px;height:14px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;font-size:.72rem}
+.te-cs{background:rgba(155,89,182,.2);color:#b07fe0}
+.te-gs{background:rgba(52,168,83,.15);color:#5ec97a}
+.te-py{background:rgba(55,118,171,.2);color:#77afd6}
+.te-ai{background:rgba(200,255,71,.1);color:var(--accent)}
+.te-db{background:rgba(71,224,255,.1);color:var(--accent2)}
+.te-git{background:rgba(240,83,50,.15);color:#f07060}
+.te-en{background:rgba(176,71,255,.12);color:#c07aff}
+
+/* ═══════════ PROJECTS ═══════════ */
+#projects{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.4rem}
+.pcard{background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column;
+  transition:border-color .25s,transform .25s,box-shadow .25s}
+.pcard:hover{border-color:rgba(200,255,71,.3);transform:translateY(-5px);
+  box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.pthumb{height:165px;background:var(--bg);border-bottom:1px solid var(--border2);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.pthumb img{width:100%;height:100%;object-fit:cover;opacity:.65;
+  transition:opacity .3s;display:none}
+.pthumb img.loaded{display:block}
+.pcard:hover .pthumb img.loaded{opacity:.82}
+.pglow{position:absolute;inset:0;opacity:.1}
+.gly{background:radial-gradient(circle at 50% 50%,var(--accent),transparent 65%)}
+.glb{background:radial-gradient(circle at 50% 50%,var(--accent2),transparent 65%)}
+.glg{background:radial-gradient(circle at 50% 50%,#4ade80,transparent 65%)}
+.pthumb-inner{text-align:center;position:relative;z-index:1}
+.pti-ico{font-size:2.6rem;display:block;margin-bottom:5px}
+.pti-sub{font-size:.65rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.pbody{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+.ptags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.8rem}
+.ptag{font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--accent);background:rgba(200,255,71,.07);
+  border:1px solid rgba(200,255,71,.16);padding:3px 9px;border-radius:100px}
+[data-theme="light"] .ptag{color:var(--accent);background:rgba(74,98,0,.07);border-color:rgba(74,98,0,.2)}
+.pwip{display:inline-flex;align-items:center;gap:6px;font-size:.68rem;
+  color:var(--accent2);margin-bottom:.7rem;font-weight:600}
+.pwip::before{content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--accent2);animation:pulse 2s infinite}
+.ptitle{font-family:'Playfair Display',serif;font-size:1.08rem;font-weight:700;
+  margin-bottom:.45rem;letter-spacing:-.01em}
+.pdesc{font-size:.83rem;color:var(--muted);line-height:1.65;flex:1;margin-bottom:1.1rem}
+.plinks{display:flex;gap:8px}
+.plink{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;
+  font-weight:500;text-decoration:none;padding:8px 14px;border-radius:9px;transition:opacity .2s}
+.pl-gh{background:var(--bg);border:1px solid var(--border2);color:var(--text)}
+.pl-wip{background:var(--bg);border:1px solid var(--border2);color:var(--muted);
+  opacity:.5;cursor:default}
+.plink:hover:not(.pl-wip){opacity:.7}
+
+/* ═══════════ CERT ═══════════ */
+#certs{}
+.cert-wrap{display:flex;flex-direction:column;gap:1rem;max-width:560px}
+.ccard{background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r);padding:1.6rem;display:flex;gap:1rem;align-items:flex-start;
+  transition:border-color .25s,transform .25s}
+.ccard:hover{border-color:rgba(200,255,71,.22);transform:translateY(-2px)}
+.cico{width:44px;height:44px;border-radius:11px;background:var(--bg);
+  border:1px solid var(--border2);display:flex;align-items:center;
+  justify-content:center;font-size:1.15rem;flex-shrink:0}
+.cname{font-weight:500;font-size:.9rem;margin-bottom:3px}
+.cissuer{font-size:.7rem;color:var(--accent);margin-bottom:4px;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase}
+[data-theme="light"] .cissuer{color:var(--accent)}
+.cdesc{font-size:.76rem;color:var(--muted);line-height:1.5}
+
+/* ═══════════ CONTACT ═══════════ */
+#contact{background:var(--bg2);border-top:1px solid var(--border)}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.cintro{font-size:.94rem;color:var(--muted);line-height:1.78;margin-bottom:2rem}
+.clinklist{display:flex;flex-direction:column;gap:.9rem}
+.clink{display:flex;align-items:center;gap:13px;padding:.95rem 1.1rem;
+  background:var(--surface);border:1px solid var(--border2);border-radius:12px;
+  text-decoration:none;color:var(--text);transition:border-color .25s,transform .25s}
+.clink:hover{border-color:rgba(200,255,71,.3);transform:translateX(5px)}
+.clico{width:36px;height:36px;border-radius:9px;
+  background:rgba(200,255,71,.06);border:1px solid rgba(200,255,71,.12);
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.cllabel{font-size:.65rem;color:var(--muted);margin-bottom:1px}
+.clval{font-weight:500;font-size:.85rem}
+
+/* form */
+.cform{background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r2);padding:2.2rem;position:relative;overflow:hidden}
+.cform::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.cfhead{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;
+  margin-bottom:1.6rem}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.67rem;color:var(--muted);margin-bottom:5px;
+  letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.fg input,.fg textarea{width:100%;background:var(--bg);border:1px solid var(--border2);
+  border-radius:9px;padding:11px 14px;color:var(--text);
+  font-family:'Epilogue',sans-serif;font-size:.86rem;outline:none;
+  transition:border-color .2s;resize:vertical}
+.fg input:focus,.fg textarea:focus{border-color:rgba(200,255,71,.45)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--faint)}
+.fg textarea{min-height:100px}
+.cfrow{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.cfbtn{width:100%;background:var(--accent);color:#08080f;border:none;
+  border-radius:10px;padding:13px;font-size:.86rem;font-weight:700;
+  cursor:pointer;font-family:'Epilogue',sans-serif;transition:opacity .2s,box-shadow .2s;
+  letter-spacing:.03em;margin-top:.4rem}
+.cfbtn:hover{opacity:.88;box-shadow:0 0 30px rgba(200,255,71,.25)}
+.cfbtn:disabled{opacity:.5;cursor:not-allowed}
+.cfmsg{font-size:.75rem;text-align:center;margin-top:.8rem;min-height:1.2em;font-weight:500}
+.cfmsg.ok{color:var(--accent)}
+.cfmsg.err{color:#f87171}
+
+/* ═══════════ FOOTER ═══════════ */
+footer{border-top:1px solid var(--border);padding:1.8rem 5%;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:.75rem;color:var(--muted);flex-wrap:wrap;gap:1rem;
+  position:relative;z-index:1}
+footer a{color:var(--muted);text-decoration:none;transition:color .2s}
+footer a:hover{color:var(--text)}
+.flogo{font-family:'Playfair Display',serif;font-weight:900;font-size:.9rem;color:var(--text)}
+.flogo em{color:var(--accent);font-style:normal}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media(max-width:980px){
+  .hero-inner{grid-template-columns:1fr;text-align:center}
+  .hero-sub{margin:0 auto 2.5rem}
+  .hero-ctas{justify-content:center}
+  .hpills{align-items:center}
+  .hphoto{order:-1}
+  .photo-frame{width:230px;height:260px}
+  .about-grid,.cgrid{grid-template-columns:1fr;gap:2.5rem}
+  .nav-links{display:none}
+  .hbg{display:flex}
+}
+@media(max-width:540px){
+  section{padding:5rem 5%}
+  .pgrid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .hero-title{font-size:3rem}
+  .cfrow{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- STARS -->
+<canvas id="stars-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="logo">Eyüp<em>.</em>dev</a>
+  <ul class="nav-links">
+    <li><a href="#about" data-tr="Hakkımda" data-en="About">Hakkımda</a></li>
+    <li><a href="#skills" data-tr="Yetenekler" data-en="Skills">Yetenekler</a></li>
+    <li><a href="#projects" data-tr="Projeler" data-en="Projects">Projeler</a></li>
+    <li><a href="#certs" data-tr="Sertifika" data-en="Certificate">Sertifika</a></li>
+    <li><a href="#contact" data-tr="İletişim" data-en="Contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="ntoggle" onclick="toggleLang()"><span class="nd"></span><span id="langLbl">EN</span></button>
+    <button class="ntoggle" onclick="toggleTheme()"><span id="themeIco">☀️</span></button>
+    <button class="hbg" onclick="openMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mmenu" id="mm">
+  <button class="mmclose" onclick="closeMenu()">✕</button>
+  <a href="#about" onclick="closeMenu()" data-tr="Hakkımda" data-en="About">Hakkımda</a>
+  <a href="#skills" onclick="closeMenu()" data-tr="Yetenekler" data-en="Skills">Yetenekler</a>
+  <a href="#projects" onclick="closeMenu()" data-tr="Projeler" data-en="Projects">Projeler</a>
+  <a href="#certs" onclick="closeMenu()" data-tr="Sertifika" data-en="Certificate">Sertifika</a>
+  <a href="#contact" onclick="closeMenu()" data-tr="İletişim" data-en="Contact">İletişim</a>
+</div>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section id="hero">
+  <div class="gblob gb1"></div>
+  <div class="gblob gb2"></div>
+  <div class="gblob gb3"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">
+        <span class="htdot"></span>
+        <span data-tr="C# Geliştirici · Bilişim Sistemleri Öğrencisi" data-en="C# Developer · Information Systems Student">C# Geliştirici · Bilişim Sistemleri Öğrencisi</span>
+      </div>
+      <h1 class="hero-title">
+        Eyüp<br><span class="outline">Tekçe</span>
+      </h1>
+      <p class="hero-sub"
+        data-tr="Daha birinci sınıftayım — ama beklemeyi sevmiyorum. Yazdığım her satır gerçek bir problemi çözüyor, her proje bir sonrakini mümkün kılıyor. Az ama gerçek."
+        data-en="I'm only in my first year — but I don't like waiting. Every line I write solves a real problem, every project makes the next one possible. Small portfolio, real work.">
+        Daha birinci sınıftayım — ama beklemeyi sevmiyorum. Yazdığım her satır gerçek bir problemi çözüyor, her proje bir sonrakini mümkün kılıyor. Az ama gerçek.
+      </p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn-primary" data-tr="Projelerimi Gör" data-en="View Projects">Projelerimi Gör</a>
+        <a href="#contact" class="btn-sec" data-tr="İletişime Geç" data-en="Get in Touch">İletişime Geç</a>
+      </div>
+      <div class="hpills">
+        <div class="hpill">
+          <span class="pd pg"></span>
+          <strong>Muş Alparslan Üni.</strong>&nbsp;·&nbsp;<span data-tr="Bilişim Sistemleri ve Teknolojileri, 1. Sınıf" data-en="Information Systems & Technologies, 1st Year">Bilişim Sistemleri ve Teknolojileri, 1. Sınıf</span>
+        </div>
+        <div class="hpill">
+          <span class="pd pb"></span>
+          <span data-tr="Erasmus · UBI Portekiz · Eylül 2026" data-en="Erasmus · UBI Portugal · Sep 2026">Erasmus · UBI Portekiz · Eylül 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hphoto">
+      <div class="photo-frame">
+        <!-- Fotoğrafın: photo.jpg dosyasını bu HTML ile aynı klasöre koy -->
+        <img src="photo.jpg" alt="Eyüp Tekçe"
+          onload="this.classList.add('loaded');this.nextElementSibling.style.display='none'"
+          onerror="this.style.display='none'">
+        <div class="pph-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          <p data-tr="Fotoğraf buraya gelecek" data-en="Photo goes here">Fotoğraf buraya gelecek</p>
+          <code>photo.jpg</code>
+        </div>
+        <div class="hero-static-label">
+          <div class="hsl-line"></div>
+          <span data-tr="Bilişim Sistemleri ve Teknolojileri Öğrencisi" data-en="Information Systems & Technologies Student">Bilişim Sistemleri ve Teknolojileri Öğrencisi</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <span class="tech-chip"><span class="tc-dot tc-cs"></span>C#</span>
+        <span class="tech-chip"><span class="tc-dot tc-gs"></span>Google APIs</span>
+        <span class="tech-chip"><span class="tc-dot tc-git"></span>Git</span>
+        <span class="tech-chip"><span class="tc-dot tc-py"></span>Python</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ ABOUT ══════════════════ -->
+<section id="about">
+  <div class="si">
+    <div class="rev">
+      <p class="seyebrow" data-tr="Hakkımda" data-en="About Me">Hakkımda</p>
+      <h2 class="stitle" data-tr="Az proje,<br>sıfır bahane." data-en="Small portfolio,<br>zero excuses.">Az proje,<br>sıfır bahane.</h2>
+      <div class="sbar"></div>
+    </div>
+    <div class="about-grid">
+      <div class="at rev">
+        <p data-tr="Ben <span class='hl'>Eyüp Tekçe</span>. Muş Alparslan Üniversitesi Bilişim Sistemleri ve Teknolojileri bölümünde birinci sınıf öğrencisiyim. 2008 doğumluyum." data-en="I'm <span class='hl'>Eyüp Tekçe</span>. First-year Information Systems & Technologies student at Muş Alparslan University. Born 2008.">
+          Ben <span class="hl">Eyüp Tekçe</span>. Muş Alparslan Üniversitesi Bilişim Sistemleri ve Teknolojileri bölümünde birinci sınıf öğrencisiyim. 2008 doğumluyum.
+        </p>
+        <p data-tr="Projelerim az — bunu biliyorum ve bunu saklamıyorum. Her projeyi gerçek bir ihtiyaçtan dolayı yaptım: sunucu maliyeti sıfır bir HWID lisans sistemi, Gemini API ile çalışan çok araçlı bir masaüstü uygulaması ve şu an aktif geliştirmede olan bir uzak makine yönetimi paneli. Bunlar benim için birer ders; okul bitince başlamayı değil, şimdi öğrenmeyi seçtim." data-en="My projects are few — I know it and I'm not hiding it. Each one was built for a real reason: a zero-cost HWID license system, a multi-tool AI desktop app using Gemini API, and a remote machine management panel I'm actively building. These are lessons for me — I chose to learn now, not after graduation.">
+          Projelerim az — bunu biliyorum ve bunu saklamıyorum. Her projeyi gerçek bir ihtiyaçtan dolayı yaptım: sunucu maliyeti sıfır bir HWID lisans sistemi, Gemini API ile çalışan çok araçlı bir masaüstü uygulaması ve şu an aktif geliştirmede olan bir uzak makine yönetimi paneli. Bunlar benim için birer ders; okul bitince başlamayı değil, şimdi öğrenmeyi seçtim.
+        </p>
+        <p data-tr="Eylül 2026'da Erasmus kapsamında Portekiz'deki <span class='hl'>UBI</span>'de Bilgisayar Mühendisliği okuyacağım. Seçim sürecinde kabul edildim." data-en="In September 2026, I'll study Computer Engineering at <span class='hl'>UBI</span> in Portugal through Erasmus. I was accepted into the program.">
+          Eylül 2026'da Erasmus kapsamında Portekiz'deki <span class="hl">UBI</span>'de Bilgisayar Mühendisliği okuyacağım. Seçim sürecinde kabul edildim.
+        </p>
+        <div class="stats">
+          <div class="stbox"><div class="n">3</div><div class="l" data-tr="Proje (2'si GitHub'da)" data-en="Projects (2 on GitHub)">Proje (2'si GitHub'da)</div></div>
+          <div class="stbox"><div class="n">1</div><div class="l" data-tr="Sertifika" data-en="Certificate">Sertifika</div></div>
+          <div class="stbox"><div class="n">B2</div><div class="l" data-tr="İngilizce (CEFR)" data-en="English (CEFR)">İngilizce (CEFR)</div></div>
+          <div class="stbox"><div class="n">1.</div><div class="l" data-tr="Üniversite yılı" data-en="University year">Üniversite yılı</div></div>
+        </div>
+      </div>
+
+      <div class="rev" style="transition-delay:.15s">
+        <div class="qcard">
+          <blockquote
+            data-tr="&ldquo;Portekiz'e gittiğimde pek çok şey daha fazla olacak. Şu an yolun başındayım ve bunu saklamaya gerek görmüyorum.&rdquo;"
+            data-en="&ldquo;By the time I get to Portugal, much of this will have grown. I'm at the start of the road — and I see no reason to hide that.&rdquo;">
+            &ldquo;Portekiz'e gittiğimde pek çok şey daha fazla olacak. Şu an yolun başındayım ve bunu saklamaya gerek görmüyorum.&rdquo;
+          </blockquote>
+          <div class="qsub">— <strong>Eyüp Tekçe</strong>, 2026</div>
+        </div>
+        <div class="ecard">
+          <div class="ecard-head">
+            <div class="eflag">🇵🇹</div>
+            <div>
+              <div class="etitle">Erasmus+ · UBI, Portekiz</div>
+              <div class="esub" data-tr="Bilgisayar Mühendisliği · Eylül 2026" data-en="Computer Engineering · September 2026">Bilgisayar Mühendisliği · Eylül 2026</div>
+            </div>
+          </div>
+          <div class="erows">
+            <div class="erow"><span class="ek" data-tr="Üniversite" data-en="University">Üniversite</span><span class="ev">Universidade da Beira Interior</span></div>
+            <div class="erow"><span class="ek" data-tr="Dil seviyesi" data-en="Language">Dil seviyesi</span><span class="ev">İngilizce B2 (CEFR)</span></div>
+            <div class="erow"><span class="ek" data-tr="Durum" data-en="Status">Durum</span><span class="ev" data-tr="Kabul edildi" data-en="Accepted">Kabul edildi</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ SKILLS ══════════════════ -->
+<section id="skills">
+  <div class="si">
+    <div class="rev">
+      <p class="seyebrow" data-tr="Yetenekler" data-en="Skills">Yetenekler</p>
+      <h2 class="stitle" data-tr="Kullandığım<br>teknolojiler" data-en="Technologies<br>I work with">Kullandığım<br>teknolojiler</h2>
+      <div class="sbar"></div>
+    </div>
+    <div class="skills-cats">
+
+      <div class="rev">
+        <div class="scat-label">
+          <div class="scat-icon sci-a">⌨️</div>
+          <div class="scat-name" data-tr="Programlama Dilleri" data-en="Programming Languages">Programlama Dilleri</div>
+          <div class="scat-line"></div>
+        </div>
+        <div class="tag-cloud">
+          <span class="ttag"><span class="ttag-em te-cs">🔷</span> C#</span>
+          <span class="ttag"><span class="ttag-em te-py">🐍</span> Python</span>
+          <span class="ttag"><span class="ttag-em" style="background:rgba(240,83,50,.15);color:#f07060">⚙️</span> C</span>
+          <span class="ttag"><span class="ttag-em" style="background:rgba(240,83,50,.15);color:#f07060">🔧</span> C++</span>
+        </div>
+      </div>
+
+      <div class="rev" style="transition-delay:.08s">
+        <div class="scat-label">
+          <div class="scat-icon sci-b">🌐</div>
+          <div class="scat-name" data-tr="API & Entegrasyon" data-en="API & Integration">API & Entegrasyon</div>
+          <div class="scat-line"></div>
+        </div>
+        <div class="tag-cloud">
+          <span class="ttag"><span class="ttag-em te-gs">📊</span> Google Sheets API</span>
+          <span class="ttag"><span class="ttag-em te-gs">📝</span> Google Apps Script</span>
+          <span class="ttag"><span class="ttag-em te-ai">🤖</span> Google Gemini AI</span>
+          <span class="ttag"><span class="ttag-em te-db">🔗</span> REST / HTTP</span>
+          <span class="ttag"><span class="ttag-em" style="background:rgba(240,180,71,.1);color:#f0c040">🌩️</span> WebSocket</span>
+        </div>
+      </div>
+
+      <div class="rev" style="transition-delay:.16s">
+        <div class="scat-label">
+          <div class="scat-icon sci-c">🖥️</div>
+          <div class="scat-name" data-tr="Araçlar & Ortam" data-en="Tools & Environment">Araçlar & Ortam</div>
+          <div class="scat-line"></div>
+        </div>
+        <div class="tag-cloud">
+          <span class="ttag"><span class="ttag-em te-cs">🔳</span> WinForms / .NET</span>
+          <span class="ttag"><span class="ttag-em te-git">🐙</span> Git / GitHub</span>
+          <span class="ttag"><span class="ttag-em" style="background:rgba(71,224,255,.1);color:var(--accent2)">🔐</span> HWID Systems</span>
+          <span class="ttag"><span class="ttag-em" style="background:rgba(52,168,83,.12);color:#5ec97a">🌿</span> Flask</span>
+        </div>
+      </div>
+
+      <div class="rev" style="transition-delay:.24s">
+        <div class="scat-label">
+          <div class="scat-icon sci-d">💬</div>
+          <div class="scat-name" data-tr="Dil" data-en="Language">Dil</div>
+          <div class="scat-line"></div>
+        </div>
+        <div class="tag-cloud">
+          <span class="ttag"><span class="ttag-em te-en">🇹🇷</span> <span data-tr="Türkçe — Anadil" data-en="Turkish — Native">Türkçe — Anadil</span></span>
+          <span class="ttag"><span class="ttag-em te-en">🇬🇧</span> <span data-tr="İngilizce — B2 CEFR" data-en="English — B2 CEFR">İngilizce — B2 CEFR</span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PROJECTS ══════════════════ -->
+<section id="projects">
+  <div class="si">
+    <div class="rev">
+      <p class="seyebrow" data-tr="Projeler" data-en="Projects">Projeler</p>
+      <h2 class="stitle" data-tr="Yaptıklarım" data-en="What I've Built">Yaptıklarım</h2>
+      <div class="sbar"></div>
+    </div>
+    <div class="pgrid">
+
+      <!-- ZeroCost License Wrapper -->
+      <div class="pcard rev">
+        <div class="pthumb">
+          <div class="pglow gly"></div>
+          <div class="pthumb-inner">
+            <span class="pti-ico">🛡️</span>
+            <span class="pti-sub">C# · Google Sheets · Apps Script</span>
+          </div>
+        </div>
+        <div class="pbody">
+          <div class="ptags">
+            <span class="ptag">Desktop</span><span class="ptag">License</span>
+            <span class="ptag">C#</span><span class="ptag">Serverless</span>
+          </div>
+          <div class="ptitle">ZeroCost License Wrapper</div>
+          <p class="pdesc"
+            data-tr="Google Sheets + Apps Script tabanlı, tamamen ücretsiz bir HWID lisans yöneticisi. Herhangi bir .exe'yi özel bir lisans ekranıyla sarar; donanım kimliğini sunucu maliyeti olmadan bulut üzerinde doğrular. Bağımsız geliştiriciler için tasarlandı."
+            data-en="A fully free HWID license manager built on Google Sheets + Apps Script. Wraps any .exe with a custom licensing screen and validates hardware identity on the cloud — zero server cost. Designed for indie developers.">
+            Google Sheets + Apps Script tabanlı, tamamen ücretsiz bir HWID lisans yöneticisi. Herhangi bir .exe'yi özel bir lisans ekranıyla sarar; donanım kimliğini sunucu maliyeti olmadan bulut üzerinde doğrular. Bağımsız geliştiriciler için tasarlandı.
+          </p>
+          <div class="plinks">
+            <a href="https://github.com/EyupTekce/ZeroCost-License-Wrapper" target="_blank" class="plink pl-gh">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.17c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.69.83.57C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multiple Programs -->
+      <div class="pcard rev" style="transition-delay:.1s">
+        <div class="pthumb">
+          <div class="pglow glb"></div>
+          <div class="pthumb-inner">
+            <span class="pti-ico">🤖</span>
+            <span class="pti-sub">C# · Gemini API · WinForms</span>
+          </div>
+        </div>
+        <div class="pbody">
+          <div class="ptags">
+            <span class="ptag">Desktop</span><span class="ptag">AI</span>
+            <span class="ptag">C#</span><span class="ptag">Gemini</span>
+          </div>
+          <div class="ptitle">Multiple Programs — AI Toolkit</div>
+          <p class="pdesc"
+            data-tr="Google Gemini API kullanan çok modüllü Windows masaüstü uygulaması. Hava durumu, web arama, döviz kuru, program takvimi oluşturma ve dosya format dönüştürme — hepsi tek bir arayüzde."
+            data-en="A multi-module Windows desktop application powered by Google Gemini API. Weather, web search, currency rates, schedule generation and file conversion — all in a single interface.">
+            Google Gemini API kullanan çok modüllü Windows masaüstü uygulaması. Hava durumu, web arama, döviz kuru, program takvimi oluşturma ve dosya format dönüştürme — hepsi tek bir arayüzde.
+          </p>
+          <div class="plinks">
+            <a href="https://github.com/EyupTekce/MULTIPLE-PROGRAMS" target="_blank" class="plink pl-gh">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.17c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.69.83.57C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- NexusRM — WIP -->
+      <div class="pcard rev" style="transition-delay:.2s">
+        <div class="pthumb">
+          <!-- NexusRM ekran görüntüsü: nexusrm.png dosyasını aynı klasöre ekle -->
+          <img src="nexusrm.png" alt="NexusRM"
+            onload="this.classList.add('loaded');this.nextElementSibling.style.display='none'"
+            onerror="this.style.display='none'">
+          <div class="pglow glg"></div>
+          <div class="pthumb-inner">
+            <span class="pti-ico">🖥️</span>
+            <span class="pti-sub">C# · Python Flask · WebSocket</span>
+          </div>
+        </div>
+        <div class="pbody">
+          <div class="ptags">
+            <span class="ptag">Desktop</span><span class="ptag">Networking</span>
+            <span class="ptag">C#</span><span class="ptag">Python</span>
+          </div>
+          <div class="pwip" data-tr="Geliştiriliyor" data-en="In Development">Geliştiriliyor</div>
+          <div class="ptitle">NexusRM</div>
+          <p class="pdesc"
+            data-tr="Uzak bilgisayarları gerçek zamanlı izleyen ve yöneten bir remote management aracı. Agent tabanlı mimari: hedef makineye küçük bir istemci kurulunca CPU, RAM, disk ve bağlantı durumu canlı görünüyor. Command Center üzerinden uzaktan komut gönderilebiliyor. Şu an aktif geliştirme aşamasında."
+            data-en="A remote management tool for real-time monitoring and control of machines. Agent-based architecture — once a small client is installed on a target machine, CPU, RAM, disk and connection status appear live. Commands can be sent remotely via Command Center. Currently in active development.">
+            Uzak bilgisayarları gerçek zamanlı izleyen ve yöneten bir remote management aracı. Agent tabanlı mimari: hedef makineye küçük bir istemci kurulunca CPU, RAM, disk ve bağlantı durumu canlı görünüyor. Command Center üzerinden uzaktan komut gönderilebiliyor. Şu an aktif geliştirme aşamasında.
+          </p>
+          <div class="plinks">
+            <span class="plink pl-wip" data-tr="Yakında GitHub'da" data-en="Coming to GitHub">Yakında GitHub'da</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CERT ══════════════════ -->
+<section id="certs">
+  <div class="si">
+    <div class="rev">
+      <p class="seyebrow" data-tr="Sertifika" data-en="Certificate">Sertifika</p>
+      <h2 class="stitle" data-tr="Belgelenmiş<br>öğrenme" data-en="Documented<br>learning">Belgelenmiş<br>öğrenme</h2>
+      <div class="sbar"></div>
+    </div>
+    <div class="cert-wrap rev">
+      <div class="ccard">
+        <div class="cico">📜</div>
+        <div>
+          <div class="cname" data-tr="B2 İngilizce Yeterlilik Sertifikası" data-en="B2 English Proficiency Certificate">B2 İngilizce Yeterlilik Sertifikası</div>
+          <div class="cissuer" data-tr="Muş Alparslan Üniversitesi" data-en="Muş Alparslan University">Muş Alparslan Üniversitesi</div>
+          <div class="cdesc" data-tr="Üniversite bünyesinde düzenlenen İngilizce dil sınavından B2 (CEFR) seviyesi ile geçildi. Bu sonuç Erasmus+ başvurusuna doğrudan katkı sağladı." data-en="Passed the English proficiency exam organized within the university at B2 (CEFR) level. This result directly supported the Erasmus+ application.">
+            Üniversite bünyesinde düzenlenen İngilizce dil sınavından B2 (CEFR) seviyesi ile geçildi. Bu sonuç Erasmus+ başvurusuna doğrudan katkı sağladı.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CONTACT ══════════════════ -->
+<section id="contact">
+  <div class="si">
+    <div class="rev">
+      <p class="seyebrow" data-tr="İletişim" data-en="Contact">İletişim</p>
+      <h2 class="stitle" data-tr="Konuşalım" data-en="Let's Talk">Konuşalım</h2>
+      <div class="sbar"></div>
+    </div>
+    <div class="cgrid">
+      <div class="rev">
+        <p class="cintro"
+          data-tr="Bir proje fikrin mi var, birlikte bir şeyler inşa etmek mi istiyorsun ya da sadece merhaba mı demek istiyorsun? Her mesaja dönüş yaparım."
+          data-en="Got a project idea, want to build something together, or just want to say hi? I reply to every message.">
+          Bir proje fikrin mi var, birlikte bir şeyler inşa etmek mi istiyorsun ya da sadece merhaba mı demek istiyorsun? Her mesaja dönüş yaparım.
+        </p>
+        <div class="clinklist">
+          <a href="https://github.com/EyupTekce" target="_blank" class="clink">
+            <div class="clico">🐙</div>
+            <div><div class="cllabel">GitHub</div><div class="clval">github.com/EyupTekce</div></div>
+          </a>
+          <a href="https://www.linkedin.com/in/eyuptekce/" target="_blank" class="clink">
+            <div class="clico">💼</div>
+            <div><div class="cllabel">LinkedIn</div><div class="clval">linkedin.com/in/eyuptekce</div></div>
+          </a>
+          <div class="clink" style="cursor:default">
+            <div class="clico">📍</div>
+            <div>
+              <div class="cllabel" data-tr="Konum" data-en="Location">Konum</div>
+              <div class="clval" data-tr="Muş, Türkiye → Portekiz (Eyl. 2026)" data-en="Muş, Turkey → Portugal (Sep. 2026)">Muş, Türkiye → Portekiz (Eyl. 2026)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REAL FORMSPREE FORM -->
+      <div class="rev" style="transition-delay:.15s">
+        <form class="cform" id="cform" onsubmit="handleForm(event)">
+          <div class="cfhead" data-tr="Mesaj gönder" data-en="Send a message">Mesaj gönder</div>
+          <div class="cfrow">
+            <div class="fg">
+              <label data-tr="İsim" data-en="Name">İsim</label>
+              <input type="text" name="name" required
+                placeholder="Adın soyadın" data-ph-tr="Adın soyadın" data-ph-en="Your full name">
+            </div>
+            <div class="fg">
+              <label data-tr="E-posta" data-en="Email">E-posta</label>
+              <input type="email" name="email" required
+                placeholder="ornek@mail.com" data-ph-tr="ornek@mail.com" data-ph-en="you@email.com">
+            </div>
+          </div>
+          <div class="fg">
+            <label data-tr="Konu" data-en="Subject">Konu</label>
+            <input type="text" name="subject"
+              placeholder="Proje iş birliği, soru..." data-ph-tr="Proje iş birliği, soru..." data-ph-en="Project collaboration, question...">
+          </div>
+          <div class="fg">
+            <label data-tr="Mesaj" data-en="Message">Mesaj</label>
+            <textarea name="message" required
+              placeholder="Merhaba Eyüp..." data-ph-tr="Merhaba Eyüp..." data-ph-en="Hi Eyüp..."></textarea>
+          </div>
+          <button class="cfbtn" type="submit" id="cfbtn"
+            data-tr="Mesajı Gönder →" data-en="Send Message →">Mesajı Gönder →</button>
+          <div class="cfmsg" id="cfmsg"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="flogo">Eyüp<em>.</em>dev</div>
+  <div>© 2026 Eyüp Tekçe</div>
+  <div style="display:flex;gap:1.4rem">
+    <a href="https://github.com/EyupTekce" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/eyuptekce/" target="_blank">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+/* ══ STARS CANVAS ══ */
+(function(){
+  const c=document.getElementById('stars-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,stars=[];
+  function resize(){ W=c.width=window.innerWidth; H=c.height=window.innerHeight; }
+  function makeStar(){
+    return {
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.2+.2,
+      a:Math.random(),
+      da:(Math.random()-.5)*.004,
+      vx:(Math.random()-.5)*.06,
+      vy:(Math.random()-.5)*.06
+    };
+  }
+  function init(){ resize(); stars=[]; for(let i=0;i<200;i++) stars.push(makeStar()); }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const isDark=document.documentElement.getAttribute('data-theme')!=='light';
+    stars.forEach(s=>{
+      s.a+=s.da; if(s.a<=0||s.a>=1) s.da*=-1;
+      s.x+=s.vx; s.y+=s.vy;
+      if(s.x<0)s.x=W; if(s.x>W)s.x=0;
+      if(s.y<0)s.y=H; if(s.y>H)s.y=0;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=isDark
+        ?`rgba(200,220,255,${s.a*.8})`
+        :`rgba(100,80,200,${s.a*.4})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',init);
+  init(); draw();
+})();
+
+/* ══ THEME ══ */
+let theme=localStorage.getItem('theme')||'dark';
+applyTheme(theme);
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('themeIco').textContent=t==='dark'?'☀️':'🌙';
+  localStorage.setItem('theme',t);
+}
+function toggleTheme(){ theme=theme==='dark'?'light':'dark'; applyTheme(theme); }
+
+/* ══ LANG ══ */
+let lang=localStorage.getItem('lang')||'tr';
+applyLang(lang);
+function applyLang(l){
+  lang=l;
+  document.getElementById('langLbl').textContent=l==='tr'?'EN':'TR';
+  document.querySelectorAll('[data-tr]').forEach(el=>{
+    const v=l==='tr'?el.dataset.tr:el.dataset.en;
+    if(v!==undefined) el.innerHTML=v;
+  });
+  document.querySelectorAll('[data-ph-tr]').forEach(el=>{
+    el.placeholder=l==='tr'?el.dataset.phTr:el.dataset.phEn;
+  });
+  localStorage.setItem('lang',l);
+}
+function toggleLang(){ applyLang(lang==='tr'?'en':'tr'); }
+
+/* ══ MOBILE MENU ══ */
+function openMenu(){ document.getElementById('mm').classList.add('open'); }
+function closeMenu(){ document.getElementById('mm').classList.remove('open'); }
+
+/* ══ REVEAL ══ */
+const ro=new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+},{threshold:.1});
+document.querySelectorAll('.rev').forEach(r=>ro.observe(r));
+
+/* ══ NAV ACTIVE ══ */
+const navSecs=document.querySelectorAll('section[id]');
+const navAs=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  navSecs.forEach(s=>{ if(window.scrollY>=s.offsetTop-90) cur=s.id; });
+  navAs.forEach(a=>{ a.style.color=a.getAttribute('href')==='#'+cur?'var(--text)':''; });
+});
+
+/* ══ FORMSPREE FORM ══ */
+async function handleForm(e){
+  e.preventDefault();
+  const btn=document.getElementById('cfbtn');
+  const msg=document.getElementById('cfmsg');
+  btn.disabled=true;
+  btn.textContent=lang==='tr'?'Gönderiliyor...':'Sending...';
+  msg.className='cfmsg'; msg.textContent='';
+  try {
+    const fd=new FormData(e.target);
+    const res=await fetch('https://formspree.io/f/xvzyyrjj',{
+      method:'POST',
+      body:fd,
+      headers:{Accept:'application/json'}
+    });
+    if(res.ok){
+      msg.className='cfmsg ok';
+      msg.textContent=lang==='tr'?'✓ Mesajın ulaştı, en kısa sürede yanıt vereceğim!':'✓ Message received! I\'ll get back to you soon.';
+      e.target.reset();
+    } else {
+      throw new Error('server');
+    }
+  } catch(_){
+    msg.className='cfmsg err';
+    msg.textContent=lang==='tr'?'✗ Bir hata oluştu, tekrar dene.':'✗ Something went wrong, please try again.';
+  }
+  btn.disabled=false;
+  btn.textContent=lang==='tr'?'Mesajı Gönder →':'Send Message →';
+}
+</script>
+</body>
+</html>
